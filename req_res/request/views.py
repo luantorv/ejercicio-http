@@ -6,9 +6,20 @@ import time, os
 class MiRespuestaPersonalizada(HttpResponseBase):
     def __init__(self, contenido, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.content = contenido
-        self.status_code = 202
-        self['X-Mensaje'] = 'Respuesta personalizada usando HttpResponseBase'
+        self.status_code = 200
+        self.streaming = False
+        self._content = contenido.encode('utf-8')
+
+    def __iter__(self):
+        yield self._content
+
+    @property
+    def content(self):
+        return self._content
+
+    @content.setter
+    def content(self, value):
+        self._content = value
 
 # Create your views here.
 def index(request):
